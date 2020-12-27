@@ -24,7 +24,11 @@ class Linear(Layer):
 
 class ReLU(Layer):
     def forward(self, x):
-        self.output = np.maximum(0, x.data)
+        assert type(x) is Tensor, "input must be tensor"
+        output = []
+        for i in x.data:
+            output.append(np.maximum(0, i))
+        self.output = Tensor(output)
         return self.output
 
 class Sigmoid(Layer):

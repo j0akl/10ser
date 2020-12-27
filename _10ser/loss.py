@@ -6,11 +6,11 @@ class LossFN:
         return self.calculate(x, y)
 
 class MSELoss(LossFN):
-    def calculate(self, x, y):
+    def calculate(self, outputs, targets):
         # takes a list of tensors, data types need to be cleaned
         # throughout the program
         total = 0
-        for i in range(len(x)):
-            total = total + (y[i].data-x[i].data)**2
-        return total / len(x)
+        for i in range(len(outputs)):
+            total = total + (outputs[i].data-targets[i].data)**2
+        return total / len(outputs)
 

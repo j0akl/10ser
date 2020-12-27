@@ -10,12 +10,10 @@ class LayerTest(unittest.TestCase):
         self.assertEqual(result, 0.52497918747894)
 
     def test_relu_output(self):
-        data  = [-1., 0, 1., 2.]
-        results = []
+        x = Tensor([-1., 0, 1., 2.])
         r = L.ReLU()
-        for i in data:
-            results.append(r(Tensor(i)))
-        self.assertListEqual(results, [0., 0., 1., 2.,])
+        results = r(x)
+        self.assertTrue((results.data == [0., 0., 1., 2.,]).all())
 
     def test_linear_given_weights(self):
         x = [Tensor([i]) for i in range(10)]
@@ -25,7 +23,7 @@ class LayerTest(unittest.TestCase):
         net.biases = Tensor([0])
         result = []
         for i in range(len(x)):
-            result.append(net(x[i]))
+            result.append(net(x[i]).data)
 
         self.assertListEqual(y, result)
 
