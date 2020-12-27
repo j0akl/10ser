@@ -16,7 +16,7 @@ class Layer:
 
 
     def update_inputs(self, new_inputs):
-        self.inputes = new_inputs
+        self.inputs = new_inputs
         self.pass_inputs_to_nodes()
 
     def update_node_weights(self, weights):
