@@ -1,5 +1,8 @@
 # ml from scratch
 
+using this tut for refernce, been doing most on my own
+https://www.youtube.com/watch?v=lGLto9Xd7bU&ab_channel=sentdex
+
 ml from scratch in nearly pure python
 
 TODO:
