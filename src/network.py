@@ -49,4 +49,3 @@ class Network:
                 print("val: ", node.get_value())
                 print("weights: ", node.weights)
                 print("bias: ", node.bias)
-
