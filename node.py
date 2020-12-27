@@ -1,20 +1,13 @@
 import random
 import numpy as np
 
-"""
-TODO:
-    - need to add support for multiple dimesions
-    - optimize (after its working)
-    - break into individual files
-"""
-
 class Node:
 
     # inputs is an array of values
     def __init__(self, prev_layer):
-        self.inputs = np.zeros_like(len(prev_layer))
+        self.inputs = prev_layer
         # size will have to be changed w multidimensional inputs
-        self.weights = np.random.rand(len(prev_layer))
+        self.weights = np.random.rand(prev_layer.size)
         self.bias = random.random()
 
     def update_inputs(self, inputs):
@@ -22,7 +15,7 @@ class Node:
 
     def get_value(self):
         value = 0
-        for i in range(self.inputs.size):
+        for i in range(self.inputs.size - 1):
             value += self.inputs[i]*self.weights[i]
         return value + self.bias
 
@@ -50,16 +43,18 @@ class Layer:
     def update_prev(self, new_prev):
         self.prev = new_prev
 
-    def pass_inputs_to_nodes(self):
+    def pass_inputs_to_nodes(self, inputs):
         # this can be updated for speed later, just focus on concept atm
         # prev_layer is the gen_outputs of the prev layer
-        for i in range(len(nodes)):
-                nodes[i].update_inputs(self.prev)
+        for node in self.nodes:
+                node.update_inputs(inputs)
 
     def generate_outputs(self):
         values = []
-        for i in range(len(nodes)):
-            values.append(self.nodes[i].get_value())
+        for node in self.nodes:
+            values.append(node.get_value())
+        return np.array(values)
+
 
 class Network:
 
@@ -68,19 +63,48 @@ class Network:
         # layers should be an array of integers
         # length of layers is num layers, value at i
         # is the number of neurons in that layer
-        self.input_layer = np.zeros_like(layers[0])
-        self.layers = []
+        self.inputs = np.zeros_like(range(layers[0]), dtype=np.float64)
+
+        # TODO
+        # layers can be changed in inherited classes to accept different types
+        # maybe include the type in the input when the net is created
+        # there is probably a better way to do this, maybe have each network
+        # be created by the user like pytorch
+        # works for now tho
+        self.layers = [Layer(layers[0], self.inputs)]
         for i in range(len(layers)):
             if i != 0:
                 self.layers.append(Layer(layers[i],
-                                         np.zeros_like(range(layers[i-1]))))
+                                         self.layers[i-1].generate_outputs()))
 
+    def __call__(self, inputs):
+        # inputs is an array length same as first layer
+        self.inputs = np.array(inputs)
+        for i in range(len(self.layers)):
+            if i == 0:
+                self.layers[i].pass_inputs_to_nodes(self.inputs)
+            else:
+                self.layers[i].pass_inputs_to_nodes(self.layers[i-1].generate_outputs())
 
+    def print_net(self):
+        for i in self.layers:
+            for j in i.nodes:
+                print("-----")
+                print("inputs: ", j.inputs)
+                print("val: ", j.get_value())
+                print("weights: ", j.weights)
+                print("bias: ", j.bias)
 
 
 if __name__ == "__main__":
     net = Network([2, 3, 4, 1])
-    for i in net.layers:
-        for j in i.nodes:
-            print(j.weights)
+
+    net.print_net()
+    print("________________")
+
+
+    net([1, 2])
+
+    net.print_net()
+
 
