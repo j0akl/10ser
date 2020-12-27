@@ -8,6 +8,12 @@ class Tensor:
         self.requires_grad = requires_grad
         self.prev = None
 
+    def __str__(self):
+        return 'Tensor({} requires_grad={})'.format(self.data, self.requires_grad)
+
+    def __repr__(self):
+        return "<Tensor {} with grad={}>".format(self.data, self.requires_grad)
+
     @property
     def shape(self):
         return self.data.shape

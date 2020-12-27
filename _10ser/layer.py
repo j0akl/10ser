@@ -15,7 +15,7 @@ class Linear(Layer):
     # possibly refactor prev_layer to inputs
     def __init__(self, n_inputs, width, activation_fn=None):
         super().__init__(activation_fn=activation_fn)
-        self.weights = Tensor.rand(n_inputs, width)
+        self.weights = Tensor.rand(width, n_inputs)
         self.biases  = Tensor.rand(width)
 
     def forward(self, x):

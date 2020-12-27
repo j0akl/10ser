@@ -8,9 +8,14 @@ class Network:
     def __init__(self, layers):
         self.layers = layers
 
+    def __call__(self, x):
+        return self.forward(x)
+
     def forward(self, x):
+        current_x = x
         for i in self.layers:
-            pass
+            current_x = i(current_x)
+        return current_x
 
     def backprop(self, x, y):
         pass
