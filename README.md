@@ -1,3 +1,11 @@
 # ml from scratch
 
- - my attempt at running machine learning algorithms in (almost) pure python
+ml from scratch in nearly pure python
+
+TODO:
+
+- use nupmy operations to get inputs (dot product)
+- make typesafe with errors
+
+- left off without being able to take inputs and pass to all nodes
+  - almost there
