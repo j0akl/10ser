@@ -35,6 +35,13 @@ class ReLU(Layer):
         self.output = Tensor(output)
         return self.output
 
+    def derivative(self, x):
+        if x >= 0:
+            return 1
+        if x < 0:
+            return 0
+
+
 class Sigmoid(Layer):
     def forward(self, x):
         return 1/(1+np.exp(-x))
