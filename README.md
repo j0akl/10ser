@@ -1,7 +1,4 @@
-# ml from scratch
-
-using this tut for refernce, been doing most on my own
-https://www.youtube.com/watch?v=lGLto9Xd7bU&ab_channel=sentdex
+# 10ser, a barebones DL library
 
 ml from scratch in nearly pure python
 
