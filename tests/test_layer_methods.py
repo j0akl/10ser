@@ -1,11 +1,11 @@
 import unittest
-from network.network import Network
+from network.layer import Layer
 
 # integration or unit test? not sure
 
 class LayerTest(unittest.TestCase):
 
-    def test_layer_call(self):
+    def test_gen_outputs(self):
         pass
 
 
