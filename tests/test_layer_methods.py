@@ -1,5 +1,5 @@
 import unittest
-from node import Layer, Network
+from network.network import Network
 
 # integration or unit test? not sure
 

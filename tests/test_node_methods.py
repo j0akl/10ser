@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from node import Node
+from network.node import Node
 
 class NodeTest(unittest.TestCase):
 
