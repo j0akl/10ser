@@ -38,6 +38,5 @@ class LayerTest(unittest.TestCase):
         for i in range(len(outputs)):
             inputs[i] = Tensor(inputs[i])
             results.append(net(inputs[i]).data)
-        print(results)
         self.assertListEqual(results, outputs)
 
