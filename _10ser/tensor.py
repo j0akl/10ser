@@ -27,6 +27,3 @@ class Tensor:
     def matmul(self, w):
         assert type(w) is Tensor, "input must be tensor"
         return Tensor(np.dot(self.data, w.data))
-
-    def backward(self, lr):
-        assert self.requires_grad, "requires grad must be true"

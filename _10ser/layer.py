@@ -5,22 +5,26 @@ from _10ser.tensor import Tensor
 # assumes fully connected layer
 
 class Layer:
-    # provides children with __call__ to use
-    # self.forward method, more added later
+    def __init__(self, activation_fn=None):
+        self.activation_fn = activation_fn
     def __call__(self, x):
         return self.forward(x)
 
 class Linear(Layer):
     # nodes is a list of nodes
     # possibly refactor prev_layer to inputs
-    def __init__(self, n_inputs, width):
+    def __init__(self, n_inputs, width, activation_fn=None):
+        super().__init__(activation_fn=activation_fn)
         self.weights = Tensor.rand(n_inputs, width)
         self.biases  = Tensor.rand(width)
-        self.outputs = []
 
     def forward(self, x):
-        self.outputs = self.weights.matmul(x).data + self.biases.data
-        return Tensor(self.outputs)
+        outputs = self.weights.matmul(x).data + self.biases.data
+        self.outputs = Tensor(outputs)
+        if self.activation_fn:
+            self.post_activation = self.activation_fn(self.outputs)
+            return self.post_activation
+        return self.outputs
 
 class ReLU(Layer):
     def forward(self, x):
