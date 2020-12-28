@@ -23,8 +23,6 @@ class Network:
         # if val is none, will skip validation after epoch
         batches = [x.data[k:k+batch_size] for k in range(len(x.data))]
         for epoch in range(epochs):
-            for layer in self.layers:
-                print("wights: ", layer.weights)
             for batch in batches:
                 self.train_batch(batch, lr)
                 if val_data is not None:
@@ -38,27 +36,26 @@ class Network:
                                                              self.evaluate(val_data),
                                                              len(val_data.data)))
     def train_batch(self, batch, lr):
-        b0 = [np.zeros_like(l.biases.data) for l in self.layers]
-        w0 = [np.zeros_like(l.weights.data) for l in self.layers]
+        b0 = [np.zeros(l.biases.data.shape) for l in self.layers]
+        w0 = [np.zeros(l.weights.data.shape) for l in self.layers]
         for x, y in batch:
             delta_b, delta_w = self.backprop(x, y)
             b0 = [nb+dnb for nb, dnb in zip(b0, delta_b)]
             w0 = [nw+dnw for nw, dnw in zip(w0, delta_w)]
         for i in range(len(self.layers)):
             # update for line length later
-            print(self.layers[i].weights.shape)
             self.layers[i].weights = Tensor([w-(lr/len(batch))*dw for w, dw in
                              zip(self.layers[i].weights.data, w0[i])])
             self.layers[i].biases = Tensor([b-(lr/len(batch))*db for b, db in
                             zip(self.layers[i].biases.data, b0[i])])
-            print(self.layers[i].weights.shape)
 
     def backprop(self, x, y):
         # returns a tuple of (db, dw), each is a list for each layer
-        b0 = [np.zeros_like(l.biases.data) for l in self.layers]
-        w0 = [np.zeros_like(l.weights.data) for l in self.layers]
-        activation = x
-        activations = [x]
+        b0 = [np.zeros(l.biases.data.shape) for l in self.layers]
+        w0 = [np.zeros(l.weights.data.shape) for l in self.layers]
+        y = Tensor([y])
+        activation = Tensor([x])
+        activations = [Tensor([x])]
         zs = []
         for layer in self.layers:
             z = np.dot(layer.weights.data, activation.data) + layer.biases.data
@@ -68,16 +65,16 @@ class Network:
 
 
         f = lambda x: self.layers[-1].activation_fn.derivative(x)
-        delta = self.cost_gradient(activations[-1], y) #* f(zs[-1])
+        delta = self.cost_gradient(activations[-1], y) * f(zs[-1])
         b0[-1] = delta
-        w0[-1] = np.dot(delta, activations[-2].data.transpose())
+        w0[-1] = np.dot(activations[-2].data.transpose(), delta)
 
-        for i in range(2, len(self.layers)):
+        for i in range(1, len(self.layers)):
             z = zs[-i]
             df = self.layers[-i].activation_fn.derivative(z)
-            delta = np.dot(self.layers[-i+1].weights.transpose(), delta) * df
+            delta = np.dot(self.layers[-i+1].weights.data.transpose(), delta) * df
             b0[-i] = delta
-            w0[-i] = np.dot(delta, activations[-i+1].data.transpose())
+            w0[-i] = np.dot(delta, activations[-i-1].data.transpose())
         return (b0, w0)
 
     def evaluate(self, val_data):
@@ -85,7 +82,7 @@ class Network:
         return sum(int(x == y) for x, y in results)
 
     def cost_gradient(self, x, y):
-        return (x.data-y)
+        return (x.data-y.data)
 
 
 

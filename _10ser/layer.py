@@ -19,11 +19,12 @@ class Linear(Layer):
         self.biases  = Tensor.rand(width)
 
     def forward(self, x):
+        # if x.data.shape == ():
+        #     x = Tensor([x.data])
         outputs = self.weights.matmul(x).data + self.biases.data
         self.outputs = Tensor(outputs)
-        if self.activation_fn:
-            self.post_activation = self.activation_fn(self.outputs)
-            return self.post_activation
+        if self.activation_fn is not None:
+            self.outputs = self.activation_fn(self.outputs)
         return self.outputs
 
 class ReLU(Layer):
