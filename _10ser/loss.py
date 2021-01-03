@@ -1,5 +1,4 @@
 import numpy as np
-from _10ser.tensor import Tensor
 
 class LossFN:
     def __call__(self, x, y):
@@ -13,6 +12,6 @@ class MSELoss(LossFN):
         # assert type(targets) is Tensor
         total = 0
         for i in range(len(outputs)):
-            total = total + (outputs[i].data-targets[i].data)**2
+            total = total + (outputs[i].data-targets[i])**2
         return total / len(outputs)
 

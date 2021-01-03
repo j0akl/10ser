@@ -1,6 +1,4 @@
 import numpy as np
-from _10ser.tensor import Tensor
-
 # this is a framework for a layer, specific types will inherit
 # assumes fully connected layer
 
@@ -10,30 +8,38 @@ class Layer:
     def __call__(self, x):
         return self.forward(x)
 
+class Input(Layer):
+    def __init__(self, n_inputs):
+        self.inputs = np.zeros_like(range(n_inputs))
+
+    def forward(self, x):
+        self.inputs = x
+        return self.inputs
+
+
 class Linear(Layer):
     # nodes is a list of nodes
     # possibly refactor prev_layer to inputs
     def __init__(self, n_inputs, width, activation_fn=None):
         super().__init__(activation_fn=activation_fn)
-        self.weights = Tensor.rand(width, n_inputs)
-        self.biases  = Tensor.rand(width)
+        self.weights = np.ones((width, n_inputs))
+        self.biases  = np.zeros(width)
 
     def forward(self, x):
-        # if x.data.shape == ():
-        #     x = Tensor([x.data])
-        outputs = self.weights.matmul(x).data + self.biases.data
-        self.outputs = Tensor(outputs)
+        self.outputs = np.dot(self.weights, x) + self.biases
         if self.activation_fn is not None:
             self.outputs = self.activation_fn(self.outputs)
         return self.outputs
 
 class ReLU(Layer):
     def forward(self, x):
-        assert type(x) is Tensor, "input must be tensor"
         output = []
-        for i in x.data:
-            output.append(np.maximum(0, i))
-        self.output = Tensor(output)
+        if len(x) == 1:
+            output.append(np.maximum(0, 1))
+        else:
+            for i in x:
+                output.append(np.maximum(0, i))
+        self.output = output
         return self.output
 
     def derivative(self, x):
